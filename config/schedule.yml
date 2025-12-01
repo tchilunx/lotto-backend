@@ -1,0 +1,12 @@
+morning_draw:
+  cron: "0 9 * * *"
+  class: "LottoDrawWorker"
+  queue: default
+  args: ["morning"]
+
+evening_draw:
+  cron: "00 19 * * *"
+  class: "LottoDrawWorker"
+  queue: default
+  args: ["evening"]
+

@@ -1,0 +1,57 @@
+#!/usr/bin/env ruby
+
+require "fileutils"
+
+APP_ROOT = File.expand_path("..", __dir__)
+Dir.chdir(APP_ROOT)
+
+# Fonction pour nettoyer les processus à l'arrêt
+def cleanup_processes
+  at_exit do
+    puts "\n🛑 Arrêt de Sidekiq..."
+    # Tuer les processus Sidekiq lancés par ce script
+    `pkill -f "bundle exec sidekiq" 2>/dev/null`
+    sleep 1
+  end
+end
+
+# Vérifier si Sidekiq est déjà en cours d'exécution
+def sidekiq_running?
+  result = `pgrep -f "bundle exec sidekiq" 2>/dev/null`.strip
+  result.length > 0
+end
+
+# Démarrer Sidekiq en arrière-plan
+def start_sidekiq
+  if sidekiq_running?
+    puts "✅ Sidekiq est déjà en cours d'exécution"
+  else
+    puts "🚀 Démarrage de Sidekiq..."
+    log_file = File.join(APP_ROOT, "log", "sidekiq.log")
+    FileUtils.mkdir_p(File.dirname(log_file))
+    
+    pid = spawn("bundle exec sidekiq", 
+                out: [log_file, "a"], 
+                err: [log_file, "a"],
+                chdir: APP_ROOT)
+    Process.detach(pid)
+    sleep 2 # Attendre un peu pour que Sidekiq démarre
+    
+    if sidekiq_running?
+      puts "✅ Sidekiq démarré (PID: #{pid})"
+      puts "   Logs: #{log_file}"
+    else
+      puts "⚠️  Sidekiq n'a pas démarré correctement. Vérifiez #{log_file}"
+    end
+  end
+end
+
+# Nettoyer les processus à l'arrêt
+cleanup_processes
+
+# Démarrer Sidekiq
+start_sidekiq
+
+# Lancer le serveur Rails
+puts "🚀 Démarrage du serveur Rails..."
+exec "./bin/rails", "server", *ARGV

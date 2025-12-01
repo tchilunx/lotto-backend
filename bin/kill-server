@@ -1,0 +1,30 @@
+#!/bin/bash
+# Script pour arrêter proprement le serveur Rails/Puma
+
+echo "🛑 Arrêt des processus Rails/Puma..."
+
+# Tuer tous les processus Rails/Puma
+pkill -9 -f "bin/dev|puma|rails.*server|foreman" 2>/dev/null
+
+# Libérer le port 3000
+lsof -ti:3000 2>/dev/null | xargs -r kill -9 2>/dev/null
+
+# Supprimer le fichier PID s'il existe
+if [ -f tmp/pids/server.pid ]; then
+  rm -f tmp/pids/server.pid
+  echo "📁 Fichier PID supprimé"
+fi
+
+sleep 1
+
+# Vérifier que le port est libre
+if lsof -ti:3000 >/dev/null 2>&1; then
+  echo "⚠️  Le port 3000 est toujours occupé"
+  echo "   Utilisez: lsof -ti:3000 | xargs kill -9"
+  exit 1
+else
+  echo "✅ Port 3000 est maintenant libre"
+  echo "✅ Tous les processus ont été arrêtés"
+  exit 0
+fi
+
