@@ -9,7 +9,7 @@ class Api::V1::WithdrawalsController < Api::V1::ApplicationController
 
   def create
     # 1. Validation des paramètres
-    validation_service = Api::V1::Services::Withdrawal::WithdrawalValidationService.new(params, current_client)
+    validation_service = WithdrawalValidationService.new(params, current_client)
     validation_result = validation_service.validate_initiate
 
     return render_error(
@@ -19,7 +19,7 @@ class Api::V1::WithdrawalsController < Api::V1::ApplicationController
     ) unless validation_result[:valid]
 
     # 2. Création du draft
-    draft_service = Api::V1::Services::Withdrawal::WithdrawalDraftCreationService.new(
+    draft_service = WithdrawalDraftCreationService.new(
       current_wallet,
       validation_result[:data],
       current_client

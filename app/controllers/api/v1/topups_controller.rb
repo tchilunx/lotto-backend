@@ -6,7 +6,7 @@ class Api::V1::TopupsController < Api::V1::ApplicationController
 
   def create
     # 1. Validation des paramètres
-    validation_service = Api::V1::Services::Topup::TopupValidationService.new(params, current_client)
+    validation_service = TopupValidationService.new(params, current_client)
     validation_result = validation_service.validate_initiate
 
     return render_error(
@@ -16,7 +16,7 @@ class Api::V1::TopupsController < Api::V1::ApplicationController
     ) unless validation_result[:valid]
 
     # 2. Création du draft
-    draft_service = Api::V1::Services::Topup::TopupDraftCreationService.new(
+    draft_service = TopupDraftCreationService.new(
       current_wallet,
       validation_result[:data],
       current_client

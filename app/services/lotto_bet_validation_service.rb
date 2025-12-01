@@ -1,5 +1,4 @@
-module Api::V1::Services::LottoBet
-  class LottoBetValidationService
+class LottoBetValidationService
     attr_reader :errors
 
     def initialize(params, client)
@@ -128,5 +127,4 @@ module Api::V1::Services::LottoBet
       }
     end
   end
-end
 

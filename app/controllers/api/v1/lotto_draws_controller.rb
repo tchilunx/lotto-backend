@@ -3,7 +3,7 @@ class Api::V1::LottoDrawsController < Api::V1::ApplicationController
 
   def index
     # 1. Récupération des tirages avec filtres
-    query_service = Api::V1::Services::LottoDraw::LottoDrawQueryService.new(params)
+    query_service = LottoDrawQueryService.new(params)
     draws = query_service.list
 
     # 2. Pagination
@@ -18,7 +18,7 @@ class Api::V1::LottoDrawsController < Api::V1::ApplicationController
 
   def latest
     # 1. Récupération du dernier tirage
-    query_service = Api::V1::Services::LottoDraw::LottoDrawQueryService.new
+    query_service = LottoDrawQueryService.new
     draw = query_service.latest
 
     # 2. Vérification
@@ -33,7 +33,7 @@ class Api::V1::LottoDrawsController < Api::V1::ApplicationController
 
   def show
     # 1. Récupération du tirage avec statistiques
-    query_service = Api::V1::Services::LottoDraw::LottoDrawQueryService.new(params)
+    query_service = LottoDrawQueryService.new(params)
     result = query_service.find_with_stats(params[:id])
 
     # 2. Préparation de la réponse
@@ -65,7 +65,7 @@ class Api::V1::LottoDrawsController < Api::V1::ApplicationController
 
   def bets
     # 1. Récupération des paris du tirage
-    query_service = Api::V1::Services::LottoDraw::LottoDrawQueryService.new(params)
+    query_service = LottoDrawQueryService.new(params)
     result = query_service.bets_for_draw(params[:id], current_client)
 
     # 2. Pagination
@@ -101,7 +101,7 @@ class Api::V1::LottoDrawsController < Api::V1::ApplicationController
     end
 
     # 2. Création du tirage
-    creation_service = Api::V1::Services::LottoDraw::LottoDrawCreationService.new(session, draw_date)
+    creation_service = LottoDrawCreationService.new(session, draw_date)
     draw = creation_service.call
 
     return render_error(

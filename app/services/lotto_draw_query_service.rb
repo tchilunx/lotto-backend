@@ -1,5 +1,4 @@
-module Api::V1::Services::LottoDraw
-  class LottoDrawQueryService
+class LottoDrawQueryService
     def initialize(params = {})
       @params = params
     end
@@ -64,6 +63,5 @@ module Api::V1::Services::LottoDraw
       
       scope
     end
-  end
 end
 

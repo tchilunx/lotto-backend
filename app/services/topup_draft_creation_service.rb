@@ -1,5 +1,4 @@
-module Api::V1::Services::Topup
-  class TopupDraftCreationService
+class TopupDraftCreationService
     attr_reader :error_message
 
     def initialize(wallet, validated_data, client)
@@ -26,6 +25,5 @@ module Api::V1::Services::Topup
       @error_message = "Erreur lors de l'initiation du topup: #{e.message}"
       nil
     end
-  end
 end
 
