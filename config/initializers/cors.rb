@@ -6,7 +6,9 @@
 
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
-    origins "*" # En production, spécifiez les domaines autorisés : ['https://yourdomain.com', 'https://app.yourdomain.com']
+    # Autoriser toutes les origines (inclut ngrok)
+    # En production, vous pouvez restreindre en spécifiant : ['https://yourdomain.com']
+    origins "*"
 
     resource "*",
       headers: :any,

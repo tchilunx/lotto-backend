@@ -19,6 +19,13 @@ class LottoBet < ApplicationRecord
   validate :validate_numbers_count
   validate :validate_numbers_range
 
+  # Exclure lotto_draw_id de la réponse JSON si le tirage n'a pas encore eu lieu
+  def as_json(options = {})
+    json = super(options)
+    json.delete("lotto_draw_id") if lotto_draw_id.nil?
+    json
+  end
+
   private
 
   def validate_numbers_count

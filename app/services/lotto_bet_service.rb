@@ -25,8 +25,8 @@ class LottoBetService
     end
 
     ActiveRecord::Base.transaction do
-      # 4. Create Bet (sans lotto_draw_id - sera associé lors du tirage)
-      bet = LottoBet.create!(
+      # 4. Create Bet (associer au tirage s'il existe déjà, sinon nil - sera associé lors du tirage)
+      bet_attributes = {
         client: client,
         client_wallet: client.client_wallet,
         numbers: numbers,
@@ -34,9 +34,12 @@ class LottoBetService
         draw_date: draw_date,
         amount: amount,
         status: :pending,
-        bet_reference: "BET-#{SecureRandom.hex(6).upcase}",
-        lotto_draw_id: nil  # Sera associé automatiquement lors du tirage
-      )
+        bet_reference: "BET-#{SecureRandom.hex(6).upcase}"
+      }
+      # Associer au tirage s'il existe déjà, sinon laisser NULL (normal avant le tirage)
+      bet_attributes[:lotto_draw_id] = existing_draw.id if existing_draw.present?
+
+      bet = LottoBet.create!(bet_attributes)
 
       # 5. Lock funds (Move to theoretical_balance)
       # Using lock! as per plan "Bloquer montant"
