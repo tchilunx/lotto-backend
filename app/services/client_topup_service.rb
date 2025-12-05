@@ -11,7 +11,7 @@ class ClientTopupService
   def self.confirm(draft_id, external_reference, client)
     draft = ClientTopupDraft.find(draft_id)
     ensure_draft_owner!(draft, client)
-    
+
     ActiveRecord::Base.transaction do
       topup = ClientTopup.create!(
         client: draft.client,

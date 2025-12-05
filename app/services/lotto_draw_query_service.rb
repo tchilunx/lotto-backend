@@ -52,11 +52,11 @@ class LottoDrawQueryService
 
     def apply_filters(scope)
       scope = scope.where(session: @params[:session]) if @params[:session].present?
-      
+
       if (start_date = safe_parse_date(:start_date))
         scope = scope.where("draw_date >= ?", start_date)
       end
-      
+
       if (end_date = safe_parse_date(:end_date))
         scope = scope.where("draw_date <= ?", end_date)
       end

@@ -15,7 +15,7 @@ class ServiceImoneyService
   def self.confirm(draft_id, external_reference, client)
     draft = ServiceImoneyDraft.find(draft_id)
     ensure_draft_owner!(draft, client)
-    
+
     ActiveRecord::Base.transaction do
       withdrawal = ServiceImoney.create!(
         client: draft.client,
