@@ -11,9 +11,6 @@ class Api::V1::LottoDrawsController < Api::V1::ApplicationController
 
     # 3. Réponse
     render_success(data: { meta: meta, draws: @draws })
-  rescue StandardError => e
-    Rails.logger.error("LottoDraws index failed: #{e.class} - #{e.message}")
-    render_error(message: "Une erreur est survenue", status: :internal_server_error)
   end
 
   def latest
@@ -26,9 +23,6 @@ class Api::V1::LottoDrawsController < Api::V1::ApplicationController
 
     # 3. Réponse
     render_success(data: draw)
-  rescue StandardError => e
-    Rails.logger.error("LottoDraws latest failed: #{e.class} - #{e.message}")
-    render_error(message: "Une erreur est survenue", status: :internal_server_error)
   end
 
   def show
@@ -58,9 +52,6 @@ class Api::V1::LottoDrawsController < Api::V1::ApplicationController
     render_success(data: response_data)
   rescue ActiveRecord::RecordNotFound
     render_error(message: "Tirage non trouvé", status: :not_found)
-  rescue StandardError => e
-    Rails.logger.error("LottoDraws show failed: #{e.class} - #{e.message}")
-    render_error(message: "Une erreur est survenue", status: :internal_server_error)
   end
 
   def bets
@@ -82,9 +73,6 @@ class Api::V1::LottoDrawsController < Api::V1::ApplicationController
     })
   rescue ActiveRecord::RecordNotFound
     render_error(message: "Tirage non trouvé", status: :not_found)
-  rescue StandardError => e
-    Rails.logger.error("LottoDraws bets failed: #{e.class} - #{e.message}")
-    render_error(message: "Une erreur est survenue", status: :internal_server_error)
   end
 
   def create
@@ -114,13 +102,6 @@ class Api::V1::LottoDrawsController < Api::V1::ApplicationController
       data: draw,
       message: "Tirage créé avec succès",
       status: :created
-    )
-  rescue StandardError => e
-    Rails.logger.error("LottoDraws create failed: #{e.class} - #{e.message}")
-    Rails.logger.error(e.backtrace.join("\n"))
-    render_error(
-      message: "Une erreur inattendue est survenue",
-      status: :internal_server_error
     )
   end
 

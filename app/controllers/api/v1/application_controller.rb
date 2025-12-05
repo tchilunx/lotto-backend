@@ -76,8 +76,12 @@ class Api::V1::ApplicationController < ActionController::API
   end
 
   def handle_error(exception)
-    Rails.logger.error "API Error: #{exception.class} - #{exception.message}"
+    controller_name = self.class.name
+    
+    Rails.logger.error "=" * 50
+    Rails.logger.error "#{controller_name}##{action_name} failed: #{exception.class} - #{exception.message}"
     Rails.logger.error exception.backtrace.join("\n")
+    Rails.logger.error "=" * 50
     
     render_error(
       message: Rails.env.development? ? exception.message : 'Une erreur est survenue',

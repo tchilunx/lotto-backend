@@ -30,20 +30,11 @@ class Api::V1::KycRequestsController < Api::V1::ApplicationController
       errors: e.record.errors.full_messages,
       status: :unprocessable_entity
     )
-  rescue StandardError => e
-    Rails.logger.error("KYC creation failed: #{e.class} - #{e.message}")
-    render_error(
-      message: e.message || "Une erreur est survenue",
-      status: :unprocessable_entity
-    )
   end
 
   def show_by_client
     meta, @kycs = paginate(current_client.kyc_requests.order(created_at: :desc))
     render_success(data: { meta: meta, kycs: @kycs })
-  rescue StandardError => e
-    Rails.logger.error("KYC show_by_client failed: #{e.class} - #{e.message}")
-    render_error(message: "Une erreur est survenue", status: :internal_server_error)
   end
 
   private
