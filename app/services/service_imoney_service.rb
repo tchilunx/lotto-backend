@@ -12,9 +12,10 @@ class ServiceImoneyService
     )
   end
 
-  def self.confirm(draft_id, external_reference)
+  def self.confirm(draft_id, external_reference, client)
     draft = ServiceImoneyDraft.find(draft_id)
-
+    ensure_draft_owner!(draft, client)
+    
     ActiveRecord::Base.transaction do
       withdrawal = ServiceImoney.create!(
         client: draft.client,
@@ -35,5 +36,12 @@ class ServiceImoneyService
       draft.destroy
       withdrawal
     end
+  end
+
+  def self.ensure_draft_owner!(draft, client)
+    return if client.nil?
+    return if draft.client_id == client.id
+
+    raise ActiveRecord::RecordNotFound, "Draft not found"
   end
 end

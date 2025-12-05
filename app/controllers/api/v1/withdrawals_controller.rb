@@ -50,7 +50,7 @@ class Api::V1::WithdrawalsController < Api::V1::ApplicationController
     end
 
     # 2. Confirmation du retrait
-    withdrawal = ServiceImoneyService.confirm(draft_id, external_reference)
+    withdrawal = ServiceImoneyService.confirm(draft_id, external_reference, current_client)
 
     # 3. Réponse de succès
     render_success(
