@@ -6,7 +6,7 @@ class Api::V1::WalletsController < Api::V1::ApplicationController
 
   def balance
     wallet = current_wallet
-    
+
     render_success(data: {
       balance: wallet.real_balance,
       real_balance: wallet.real_balance,

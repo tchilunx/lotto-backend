@@ -1,5 +1,5 @@
 class Api::V1::LottoDrawsController < Api::V1::ApplicationController
-  skip_before_action :authenticate_client!, only: [:index, :show, :latest]
+  skip_before_action :authenticate_client!, only: [ :index, :show, :latest ]
 
   def index
     # 1. Récupération des tirages avec filtres
@@ -37,10 +37,10 @@ class Api::V1::LottoDrawsController < Api::V1::ApplicationController
     }
 
     # 3. Inclusion des paris si demandé
-    if params[:include_bets] == 'true' || params[:include_bets] == '1'
+    if params[:include_bets] == "true" || params[:include_bets] == "1"
       bets_scope = result[:draw].lotto_bets.order(created_at: :desc)
       bets_scope = bets_scope.where(status: params[:bet_status]) if params[:bet_status].present?
-      
+
       meta, bets = paginate(bets_scope)
       response_data[:bets] = {
         meta: meta,
@@ -80,10 +80,10 @@ class Api::V1::LottoDrawsController < Api::V1::ApplicationController
     session = draw_params[:session]
     draw_date = draw_params[:draw_date] || Date.today
 
-    unless %w[morning evening].include?(session)
+    unless %w[ morning evening ].include?(session)
       return render_error(
         message: "Session invalide",
-        errors: ["Session doit être 'morning' ou 'evening'"],
+        errors: [ "Session doit être 'morning' ou 'evening'" ],
         status: :unprocessable_entity
       )
     end

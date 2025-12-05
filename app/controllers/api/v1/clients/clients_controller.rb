@@ -2,9 +2,9 @@ class Api::V1::Clients::ClientsController < Api::V1::ApplicationController
   def wallet
     # 1. Récupération du wallet
     wallet = current_wallet
-    
+
     return render_error(
-      message: 'Le portefeuille du client n\'a pas été trouvé',
+      message: "Le portefeuille du client n'a pas été trouvé",
       status: :not_found
     ) if wallet.nil?
 
@@ -27,4 +27,3 @@ class Api::V1::Clients::ClientsController < Api::V1::ApplicationController
     render_success(data: wallet_data)
   end
 end
-
