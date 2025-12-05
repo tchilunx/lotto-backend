@@ -50,7 +50,7 @@ class Api::V1::TopupsController < Api::V1::ApplicationController
     end
 
     # 2. Confirmation du topup
-    topup = ClientTopupService.confirm(draft_id, external_reference)
+    topup = ClientTopupService.confirm(draft_id, external_reference, current_client)
 
     # 3. Réponse de succès
     render_success(

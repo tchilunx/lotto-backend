@@ -53,15 +53,24 @@ class LottoDrawQueryService
     def apply_filters(scope)
       scope = scope.where(session: @params[:session]) if @params[:session].present?
       
-      if @params[:start_date].present?
-        scope = scope.where("draw_date >= ?", Date.parse(@params[:start_date]))
+      if (start_date = safe_parse_date(:start_date))
+        scope = scope.where("draw_date >= ?", start_date)
       end
       
-      if @params[:end_date].present?
-        scope = scope.where("draw_date <= ?", Date.parse(@params[:end_date]))
+      if (end_date = safe_parse_date(:end_date))
+        scope = scope.where("draw_date <= ?", end_date)
       end
       
       scope
+    end
+
+    def safe_parse_date(key)
+      raw_value = @params[key] || @params[key.to_s]
+      return nil if raw_value.blank?
+
+      Date.parse(raw_value)
+    rescue ArgumentError
+      raise ActionController::BadRequest, "#{key} must be a valid date in YYYY-MM-DD format"
     end
 end
 
