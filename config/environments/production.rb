@@ -80,11 +80,18 @@ Rails.application.configure do
   config.active_record.attributes_for_inspect = [ :id ]
 
   # Enable DNS rebinding protection and other `Host` header attacks.
-  # config.hosts = [
-  #   "example.com",     # Allow requests from example.com
-  #   /.*\.example\.com/ # Allow requests from subdomains like `www.example.com`
-  # ]
-  #
+  config.hosts = [
+    # Add your production domain here
+    # "example.com",     # Allow requests from example.com
+    # /.*\.example\.com/ # Allow requests from subdomains like `www.example.com`
+  ]
+
+  # Allow ngrok domains for tunneling (useful for testing production with ngrok)
+  config.hosts << /.*\.ngrok-free\.app/
+  config.hosts << /.*\.ngrok\.io/
+  config.hosts << /.*\.ngrok\.app/
+  config.hosts << /.*\.ngrok-free\.dev/ # Pour les nouveaux domaines ngrok
+
   # Skip DNS rebinding protection for the default health check endpoint.
   # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
 end

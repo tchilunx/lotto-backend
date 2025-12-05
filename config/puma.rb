@@ -30,7 +30,8 @@ threads threads_count, threads_count
 
 # Bind to all interfaces (0.0.0.0) to allow access from other devices on the network
 # Using bind instead of port to avoid double binding conflict
-bind ENV.fetch("BIND", "tcp://0.0.0.0:#{ENV.fetch("PORT", 3000)}")
+bind_address = ENV.fetch("BIND", "tcp://0.0.0.0:#{ENV.fetch("PORT", 3000)}")
+bind bind_address
 
 # Allow puma to be restarted by `bin/rails restart` command.
 plugin :tmp_restart

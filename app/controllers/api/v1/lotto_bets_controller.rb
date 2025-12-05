@@ -1,12 +1,12 @@
 class Api::V1::LottoBetsController < Api::V1::ApplicationController
   def index
     meta, @bets = paginate(current_client.lotto_bets.order(created_at: :desc))
-    render_success(data: { meta: meta, bets: @bets })
+    render_success(data: { meta: meta, data: @bets })
   end
 
   def create
     # 1. Validation des paramètres
-    validation_service = Api::V1::Services::LottoBet::LottoBetValidationService.new(bet_params, current_client)
+    validation_service = LottoBetValidationService.new(bet_params, current_client)
     validation_result = validation_service.validate_create
 
     return render_error(
@@ -16,7 +16,7 @@ class Api::V1::LottoBetsController < Api::V1::ApplicationController
     ) unless validation_result[:valid]
 
     # 2. Création du pari
-    creation_service = Api::V1::Services::LottoBet::LottoBetCreationService.new(
+    creation_service = LottoBetCreationService.new(
       current_client,
       validation_result[:data]
     )
@@ -30,16 +30,8 @@ class Api::V1::LottoBetsController < Api::V1::ApplicationController
 
     # 3. Réponse de succès
     render_success(
-      data: bet,
-      message: "Pari créé avec succès",
-      status: :created
-    )
-  rescue StandardError => e
-    Rails.logger.error("LottoBet creation failed: #{e.class} - #{e.message}")
-    Rails.logger.error(e.backtrace.join("\n"))
-    render_error(
-      message: "Une erreur inattendue est survenue",
-      status: :internal_server_error
+      data: { bet: bet },
+      message: "Pari créé avec succès"
     )
   end
 

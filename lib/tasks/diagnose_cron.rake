@@ -1,10 +1,10 @@
 namespace :diagnose do
   desc "Diagnostiquer pourquoi les jobs cron ne se lancent pas"
-  task :cron => :environment do
+  task cron: :environment do
     puts "\n" + "=" * 60
     puts "DIAGNOSTIC DES JOBS CRON"
     puts "=" * 60
-    
+
     # 1. Vérifier si sidekiq-cron est disponible
     puts "\n1. Vérification de sidekiq-cron:"
     if defined?(Sidekiq::Cron::Job)
@@ -14,7 +14,7 @@ namespace :diagnose do
       puts "   → Installez la gem: bundle install"
       exit 1
     end
-    
+
     # 2. Vérifier les jobs chargés
     puts "\n2. Jobs chargés dans Sidekiq:"
     jobs = Sidekiq::Cron::Job.all
@@ -31,7 +31,7 @@ namespace :diagnose do
         puts "     - Status: #{job.status}"
         puts "     - Activé: #{job.enabled? ? '✅' : '❌'}"
         puts "     - Dernière exécution: #{job.last_enqueue_time || 'Jamais'}"
-        
+
         # Calculer la prochaine exécution
         begin
           next_time = job.parsed_cron.next_time
@@ -45,13 +45,13 @@ namespace :diagnose do
         end
       end
     end
-    
+
     # 3. Vérifier le fuseau horaire
     puts "\n3. Fuseau horaire:"
     puts "   - Time.zone: #{Time.zone.name}"
     puts "   - Heure actuelle: #{Time.current}"
     puts "   - Heure UTC: #{Time.now.utc}"
-    
+
     # 4. Vérifier schedule.yml
     puts "\n4. Contenu de schedule.yml:"
     schedule_file = Rails.root.join("config", "schedule.yml")
@@ -68,7 +68,7 @@ namespace :diagnose do
     else
       puts "   ❌ Fichier non trouvé: #{schedule_file}"
     end
-    
+
     # 5. Test manuel du worker
     puts "\n5. Test manuel du worker:"
     begin
@@ -77,7 +77,7 @@ namespace :diagnose do
     rescue => e
       puts "   ❌ Erreur lors du test: #{e.class} - #{e.message}"
     end
-    
+
     # 6. Vérifier si Sidekiq est en cours d'exécution
     puts "\n6. Processus Sidekiq:"
     sidekiq_pids = `pgrep -f "sidekiq"`.strip
@@ -87,11 +87,11 @@ namespace :diagnose do
     else
       puts "   ✅ Sidekiq est en cours d'exécution (PID: #{sidekiq_pids.split("\n").join(', ')})"
     end
-    
+
     puts "\n" + "=" * 60
     puts "RECOMMANDATIONS:"
     puts "=" * 60
-    
+
     if jobs.empty?
       puts "1. Redémarrez Sidekiq pour charger les jobs depuis schedule.yml"
     else
@@ -102,12 +102,11 @@ namespace :diagnose do
         end
       end
     end
-    
+
     puts "2. Vérifiez les logs de Sidekiq: tail -f log/sidekiq.log"
     puts "3. Vérifiez le dashboard Sidekiq: http://localhost:3000/sidekiq (onglet Cron)"
     puts "4. Testez manuellement: bundle exec rake lotto:draw:test[evening]"
-    
+
     puts "\n"
   end
 end
-

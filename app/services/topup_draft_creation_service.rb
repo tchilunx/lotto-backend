@@ -1,5 +1,4 @@
-module Api::V1::Services::Topup
-  class TopupDraftCreationService
+class TopupDraftCreationService
     attr_reader :error_message
 
     def initialize(wallet, validated_data, client)
@@ -18,7 +17,7 @@ module Api::V1::Services::Topup
         @payment_method,
         @draft_data
       )
-      
+
       draft
     rescue => e
       Rails.logger.error("TopupDraftCreationService error: #{e.class} - #{e.message}")
@@ -26,6 +25,4 @@ module Api::V1::Services::Topup
       @error_message = "Erreur lors de l'initiation du topup: #{e.message}"
       nil
     end
-  end
 end
-

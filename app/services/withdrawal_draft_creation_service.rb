@@ -1,5 +1,4 @@
-module Api::V1::Services::Withdrawal
-  class WithdrawalDraftCreationService
+class WithdrawalDraftCreationService
     attr_reader :error_message
 
     def initialize(wallet, validated_data, client)
@@ -18,7 +17,7 @@ module Api::V1::Services::Withdrawal
         @phone_number,
         @draft_data
       )
-      
+
       draft
     rescue WalletProcessingService::InsufficientFundsError => e
       @error_message = e.message
@@ -29,6 +28,4 @@ module Api::V1::Services::Withdrawal
       @error_message = "Erreur lors de l'initiation du retrait: #{e.message}"
       nil
     end
-  end
 end
-

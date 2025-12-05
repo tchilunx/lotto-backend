@@ -1,5 +1,4 @@
-module Api::V1::Services::Withdrawal
-  class WithdrawalValidationService
+class TopupValidationService
     attr_reader :errors
 
     def initialize(params, client)
@@ -10,8 +9,7 @@ module Api::V1::Services::Withdrawal
 
     def validate_initiate
       validate_amount
-      validate_phone_number
-      validate_balance
+      validate_payment_method
 
       {
         valid: @errors.empty?,
@@ -34,32 +32,22 @@ module Api::V1::Services::Withdrawal
       @validated_amount = amount
     end
 
-    def validate_phone_number
-      phone_number = @params[:phone_number]
+    def validate_payment_method
+      payment_method = @params[:payment_method]
 
-      if phone_number.blank?
-        @errors << "Le numéro de téléphone est requis"
+      if payment_method.blank?
+        @errors << "Le mode de paiement est requis"
         return
       end
 
-      @validated_phone_number = phone_number
-    end
-
-    def validate_balance
-      return unless @validated_amount
-
-      if @client.client_wallet.real_balance < @validated_amount
-        @errors << "Solde insuffisant"
-      end
+      @validated_payment_method = payment_method
     end
 
     def valid_data
       {
         amount: @validated_amount,
-        phone_number: @validated_phone_number,
+        payment_method: @validated_payment_method,
         draft_data: @params[:draft_data] || {}
       }
     end
-  end
 end
-
