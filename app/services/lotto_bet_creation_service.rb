@@ -18,7 +18,7 @@ class LottoBetCreationService
       @draw_date,
       @amount
     )
-    
+
     bet
   rescue LottoBetService::DrawAlreadyCompletedError => e
     @error_message = e.message
@@ -37,4 +37,3 @@ class LottoBetCreationService
     nil
   end
 end
-

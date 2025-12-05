@@ -28,7 +28,7 @@ class ClientTopupService
         topup.reference,
         "Topup via #{draft.payment_method}"
       )
-      
+
       draft.destroy
       topup
     end
@@ -41,4 +41,3 @@ class ClientTopupService
     raise ActiveRecord::RecordNotFound, "Draft not found"
   end
 end
-

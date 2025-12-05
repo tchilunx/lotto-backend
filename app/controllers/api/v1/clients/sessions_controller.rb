@@ -1,26 +1,26 @@
 class Api::V1::Clients::SessionsController < Devise::SessionsController
   respond_to :json
   skip_before_action :verify_authenticity_token
-  skip_before_action :authenticate_client!, only: [:create], raise: false
+  skip_before_action :authenticate_client!, only: [ :create ], raise: false
 
   def create
     phone = sign_in_params[:phone]
     password = sign_in_params[:password]
-    
+
     Rails.logger.debug "Attempting login with phone: #{phone}"
-    
+
     client = Client.find_for_database_authentication(phone: phone)
-    
+
     if client && client.valid_password?(password)
       sign_in(client)
       # Mettre à jour le jti pour correspondre au token généré
       # Cela permet de valider le token lors des prochaines requêtes
-      token = request.env['warden-jwt_auth.token']
+      token = request.env["warden-jwt_auth.token"]
       if token.present?
         begin
-          decoded = JWT.decode(token, Rails.application.secret_key_base, true, { algorithm: 'HS256' })
+          decoded = JWT.decode(token, Rails.application.secret_key_base, true, { algorithm: "HS256" })
           payload = decoded[0]
-          client.update_column(:jti, payload['jti']) if payload['jti'].present?
+          client.update_column(:jti, payload["jti"]) if payload["jti"].present?
         rescue => e
           Rails.logger.warn "Failed to update jti: #{e.message}"
         end
@@ -28,11 +28,11 @@ class Api::V1::Clients::SessionsController < Devise::SessionsController
       respond_with(client)
     else
       Rails.logger.warn "Authentication failed for phone: #{phone}"
-      render json: { error: 'Unauthorized', message: 'Invalid phone or password.' }, status: :unauthorized
+      render json: { error: "Unauthorized", message: "Invalid phone or password." }, status: :unauthorized
     end
   rescue => e
     Rails.logger.error "Login error: #{e.class} - #{e.message}"
-    render json: { error: 'Unauthorized', message: 'Invalid phone or password.' }, status: :unauthorized
+    render json: { error: "Unauthorized", message: "Invalid phone or password." }, status: :unauthorized
   end
 
   private
@@ -47,9 +47,9 @@ class Api::V1::Clients::SessionsController < Devise::SessionsController
 
   def respond_with(resource, _opts = {})
     render json: {
-      message: 'Connexion réussie.',
+      message: "Connexion réussie.",
       data: resource,
-      token: request.env['warden-jwt_auth.token']
+      token: request.env["warden-jwt_auth.token"]
     }, status: :ok
   end
 

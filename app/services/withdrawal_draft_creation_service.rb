@@ -17,7 +17,7 @@ class WithdrawalDraftCreationService
         @phone_number,
         @draft_data
       )
-      
+
       draft
     rescue WalletProcessingService::InsufficientFundsError => e
       @error_message = e.message
@@ -29,4 +29,3 @@ class WithdrawalDraftCreationService
       nil
     end
 end
-

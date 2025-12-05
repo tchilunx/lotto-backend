@@ -21,7 +21,7 @@ class LottoBetService
     # 3. KYC Check
     unless client.kyc_requests.approved.exists?
       # Uncomment to enforce KYC
-      # raise "KYC requis pour parier" 
+      # raise "KYC requis pour parier"
     end
 
     ActiveRecord::Base.transaction do
@@ -61,4 +61,3 @@ class LottoBetService
   end
   private_class_method :draw_time_for
 end
-

@@ -32,7 +32,7 @@ class ServiceImoneyService
         withdrawal.reference,
         "Withdrawal to #{draft.phone_number}"
       )
-      
+
       draft.destroy
       withdrawal
     end
@@ -45,4 +45,3 @@ class ServiceImoneyService
     raise ActiveRecord::RecordNotFound, "Draft not found"
   end
 end
-
