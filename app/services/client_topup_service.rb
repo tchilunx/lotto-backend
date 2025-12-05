@@ -10,7 +10,7 @@ class ClientTopupService
 
   def self.confirm(draft_id, external_reference)
     draft = ClientTopupDraft.find(draft_id)
-    
+
     ActiveRecord::Base.transaction do
       topup = ClientTopup.create!(
         client: draft.client,
@@ -27,10 +27,9 @@ class ClientTopupService
         topup.reference,
         "Topup via #{draft.payment_method}"
       )
-      
+
       draft.destroy
       topup
     end
   end
 end
-

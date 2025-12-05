@@ -14,7 +14,7 @@ class ServiceImoneyService
 
   def self.confirm(draft_id, external_reference)
     draft = ServiceImoneyDraft.find(draft_id)
-    
+
     ActiveRecord::Base.transaction do
       withdrawal = ServiceImoney.create!(
         client: draft.client,
@@ -31,10 +31,9 @@ class ServiceImoneyService
         withdrawal.reference,
         "Withdrawal to #{draft.phone_number}"
       )
-      
+
       draft.destroy
       withdrawal
     end
   end
 end
-

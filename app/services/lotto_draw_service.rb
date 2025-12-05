@@ -15,7 +15,7 @@ class LottoDrawService
         draw_date: draw_date,
         status: :pending
       )
-      
+
       Rails.logger.info "LottoDrawService: Generating draw for #{session} session on #{draw_date} (#{pending_bets.count} pending bets)"
 
       # 2. Generate Random Numbers (CSPRNG)
@@ -42,7 +42,7 @@ class LottoDrawService
 
       # 5. Trigger Win Calculation
       LottoWinCalculationService.calculate_wins(draw)
-      
+
       Rails.logger.info "LottoDrawService: Draw ##{draw.id} completed successfully"
       draw
     end
@@ -55,4 +55,3 @@ class LottoDrawService
     raise
   end
 end
-

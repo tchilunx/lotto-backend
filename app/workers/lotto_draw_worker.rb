@@ -9,13 +9,13 @@ class LottoDrawWorker
       hour = Time.current.hour
       session = hour < 12 ? "morning" : "evening"
     end
-    
+
     draw_date = Date.today
-    
+
     Rails.logger.info "LottoDrawWorker: Starting draw generation for #{session} session on #{draw_date}"
-    
+
     draw = LottoDrawService.generate_draw(session, draw_date)
-    
+
     Rails.logger.info "LottoDrawWorker: Successfully generated draw ##{draw.id}"
     draw
   rescue LottoDrawService::DrawAlreadyExistsError => e
@@ -28,4 +28,3 @@ class LottoDrawWorker
     raise
   end
 end
-

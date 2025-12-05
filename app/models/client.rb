@@ -39,7 +39,7 @@ class Client < ApplicationRecord
   def self.jwt_revoked?(payload, user)
     return true if user.nil?
     return true if user.jti.nil? # Token révoqué explicitement
-    user.jti != payload['jti'] # Token invalide si jti ne correspond pas
+    user.jti != payload["jti"] # Token invalide si jti ne correspond pas
   end
 
   def self.revoke_jwt(payload, user)

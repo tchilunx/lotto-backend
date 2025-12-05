@@ -6,13 +6,12 @@
 
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
-    origins '*' # En production, spécifiez les domaines autorisés : ['https://yourdomain.com', 'https://app.yourdomain.com']
+    origins "*" # En production, spécifiez les domaines autorisés : ['https://yourdomain.com', 'https://app.yourdomain.com']
 
-    resource '*',
+    resource "*",
       headers: :any,
-      methods: [:get, :post, :put, :patch, :delete, :options, :head],
-      expose: ['Authorization', 'Content-Type'],
+      methods: [ :get, :post, :put, :patch, :delete, :options, :head ],
+      expose: [ "Authorization", "Content-Type" ],
       credentials: false
   end
 end
-

@@ -4,22 +4,22 @@ Sidekiq.configure_server do |config|
 
     if File.exist?(schedule_file) && defined?(Sidekiq::Cron::Job)
       schedule = YAML.load_file(schedule_file)
-      
+
       # Convertir 'class' en 'klass' pour sidekiq-cron si nécessaire
       schedule.each do |job_name, job_config|
-        job_config['klass'] = job_config.delete('class') if job_config['class']
+        job_config["klass"] = job_config.delete("class") if job_config["class"]
       end
-      
+
       Sidekiq::Cron::Job.load_from_hash schedule
-      
+
       Rails.logger.info "=" * 50
       Rails.logger.info "Sidekiq: Chargement des jobs cron depuis schedule.yml"
       Rails.logger.info "=" * 50
       schedule.each do |job_name, job_config|
-        cron = job_config['cron'] || job_config[:cron]
-        klass = job_config['klass'] || job_config[:klass] || job_config['class']
+        cron = job_config["cron"] || job_config[:cron]
+        klass = job_config["klass"] || job_config[:klass] || job_config["class"]
         Rails.logger.info "  - #{job_name}: #{cron} -> #{klass}"
-        
+
         # Vérifier et activer le job
         job = Sidekiq::Cron::Job.find(job_name)
         if job
@@ -35,4 +35,3 @@ Sidekiq.configure_server do |config|
     end
   end
 end
-
