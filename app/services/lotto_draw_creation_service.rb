@@ -20,4 +20,3 @@ class LottoDrawCreationService
     nil
   end
 end
-

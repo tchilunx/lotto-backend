@@ -1,7 +1,7 @@
 class Api::V1::Clients::RegistrationsController < Devise::RegistrationsController
   respond_to :json
   skip_before_action :verify_authenticity_token
-  skip_before_action :authenticate_client!, only: [:create], raise: false
+  skip_before_action :authenticate_client!, only: [ :create ], raise: false
 
   private
 
@@ -16,18 +16,18 @@ class Api::V1::Clients::RegistrationsController < Devise::RegistrationsControlle
   def respond_with(resource, _opts = {})
     if resource.persisted?
       # Mettre à jour le jti pour correspondre au token généré
-      token = request.env['warden-jwt_auth.token']
+      token = request.env["warden-jwt_auth.token"]
       if token.present?
         begin
-          decoded = JWT.decode(token, Rails.application.secret_key_base, true, { algorithm: 'HS256' })
+          decoded = JWT.decode(token, Rails.application.secret_key_base, true, { algorithm: "HS256" })
           payload = decoded[0]
-          resource.update_column(:jti, payload['jti']) if payload['jti'].present?
+          resource.update_column(:jti, payload["jti"]) if payload["jti"].present?
         rescue => e
           Rails.logger.warn "Failed to update jti: #{e.message}"
         end
       end
       render json: {
-        message: 'Signed up successfully.',
+        message: "Signed up successfully.",
         data: resource,
         token: token
       }, status: :ok

@@ -35,13 +35,6 @@ class Api::V1::TopupsController < Api::V1::ApplicationController
       message: "Topup initié avec succès",
       status: :created
     )
-  rescue StandardError => e
-    Rails.logger.error("Topup initiation failed: #{e.class} - #{e.message}")
-    Rails.logger.error(e.backtrace.join("\n"))
-    render_error(
-      message: "Une erreur inattendue est survenue",
-      status: :internal_server_error
-    )
   end
 
   def confirm
@@ -57,7 +50,7 @@ class Api::V1::TopupsController < Api::V1::ApplicationController
     end
 
     # 2. Confirmation du topup
-    topup = ClientTopupService.confirm(draft_id, external_reference)
+    topup = ClientTopupService.confirm(draft_id, external_reference, current_client)
 
     # 3. Réponse de succès
     render_success(
@@ -66,11 +59,5 @@ class Api::V1::TopupsController < Api::V1::ApplicationController
     )
   rescue ActiveRecord::RecordNotFound
     render_error(message: "Draft non trouvé", status: :not_found)
-  rescue => e
-    Rails.logger.error("Topup confirmation failed: #{e.class} - #{e.message}")
-    render_error(
-      message: e.message || "Erreur lors de la confirmation du topup",
-      status: :unprocessable_entity
-    )
   end
 end

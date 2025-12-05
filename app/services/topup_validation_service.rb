@@ -50,4 +50,4 @@ class TopupValidationService
         draft_data: @params[:draft_data] || {}
       }
     end
-  end
+end

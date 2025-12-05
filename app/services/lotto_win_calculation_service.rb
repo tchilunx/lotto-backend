@@ -5,7 +5,7 @@ class LottoWinCalculationService
       lotto_draw_id: draw.id,
       status: :pending
     )
-    
+
     # Fallback: if no bets found by draw_id, try by session and date
     if bets.empty?
       bets = LottoBet.where(
@@ -26,7 +26,7 @@ class LottoWinCalculationService
     bets.find_each do |bet|
       matches = (bet.numbers & draw.numbers).length
       win_amount = calculate_win_amount(matches, bet.amount)
-      
+
       ActiveRecord::Base.transaction do
         if win_amount > 0
           bet.update!(status: :won)
@@ -51,11 +51,11 @@ class LottoWinCalculationService
         end
       end
     end
-    
+
     draw.update!(status: :completed)
-    
+
     Rails.logger.info "LottoWinCalculationService: Draw ##{draw.id} completed - Wins: #{wins_count}, Losses: #{losses_count}, Total win amount: #{total_win_amount}"
-    
+
     # Enqueue credit worker (5 minutes delay)
     LottoWinCreditWorker.perform_in(5.minutes, draw.id)
     Rails.logger.info "LottoWinCalculationService: Scheduled credit worker for draw ##{draw.id} in 5 minutes"
@@ -75,4 +75,3 @@ class LottoWinCalculationService
     end
   end
 end
-

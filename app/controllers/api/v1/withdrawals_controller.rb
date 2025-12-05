@@ -2,9 +2,6 @@ class Api::V1::WithdrawalsController < Api::V1::ApplicationController
   def index
     meta, @withdrawals = paginate(current_client.service_imoneys.order(created_at: :desc))
     render_success(data: { meta: meta, withdrawals: @withdrawals })
-  rescue StandardError => e
-    Rails.logger.error("Withdrawals index failed: #{e.class} - #{e.message}")
-    render_error(message: "Une erreur est survenue", status: :internal_server_error)
   end
 
   def create
@@ -38,13 +35,6 @@ class Api::V1::WithdrawalsController < Api::V1::ApplicationController
       message: "Retrait initié avec succès",
       status: :created
     )
-  rescue StandardError => e
-    Rails.logger.error("Withdrawal initiation failed: #{e.class} - #{e.message}")
-    Rails.logger.error(e.backtrace.join("\n"))
-    render_error(
-      message: "Une erreur inattendue est survenue",
-      status: :internal_server_error
-    )
   end
 
   def confirm
@@ -60,7 +50,7 @@ class Api::V1::WithdrawalsController < Api::V1::ApplicationController
     end
 
     # 2. Confirmation du retrait
-    withdrawal = ServiceImoneyService.confirm(draft_id, external_reference)
+    withdrawal = ServiceImoneyService.confirm(draft_id, external_reference, current_client)
 
     # 3. Réponse de succès
     render_success(
@@ -69,11 +59,5 @@ class Api::V1::WithdrawalsController < Api::V1::ApplicationController
     )
   rescue ActiveRecord::RecordNotFound
     render_error(message: "Draft non trouvé", status: :not_found)
-  rescue => e
-    Rails.logger.error("Withdrawal confirmation failed: #{e.class} - #{e.message}")
-    render_error(
-      message: e.message || "Erreur lors de la confirmation du retrait",
-      status: :unprocessable_entity
-    )
   end
 end

@@ -5,11 +5,11 @@ class LottoWinCreditWorker
 
   def perform(draw_id)
     draw = LottoDraw.find(draw_id)
-    
+
     Rails.logger.info "LottoWinCreditWorker: Starting credit process for draw ##{draw_id}"
-    
+
     LottoWinCreditService.credit_wins(draw)
-    
+
     Rails.logger.info "LottoWinCreditWorker: Successfully credited wins for draw ##{draw_id}"
   rescue ActiveRecord::RecordNotFound => e
     Rails.logger.error "LottoWinCreditWorker: Draw ##{draw_id} not found - #{e.message}"
@@ -21,4 +21,3 @@ class LottoWinCreditWorker
     raise
   end
 end
-

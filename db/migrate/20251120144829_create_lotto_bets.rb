@@ -14,6 +14,6 @@ class CreateLottoBets < ActiveRecord::Migration[8.1]
       t.timestamps
     end
     add_index :lotto_bets, :bet_reference, unique: true
-    add_index :lotto_bets, [:client_id, :draw_date, :session]
+    add_index :lotto_bets, [ :client_id, :draw_date, :session ]
   end
 end

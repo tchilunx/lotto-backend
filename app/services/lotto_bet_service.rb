@@ -6,7 +6,7 @@ class LottoBetService
     # 1. Validation closing time (5 min before) - BLOCAGE DES PARIS
     # Les paris sont fermés 5 minutes avant le tirage
     # Draw times: Morning 09:00, Evening 20:25
-    draw_time = session == "morning" ? draw_date.to_time.change(hour: 9, min: 0) : draw_date.to_time.change(hour: 21, min: 25)
+    draw_time = draw_time_for(draw_date, session)
     closing_time = draw_time - 5.minutes
     if Time.current >= closing_time
       raise BettingClosedError, "Les paris sont fermés pour ce tirage (fermeture à #{closing_time.strftime('%H:%M')}, tirage à #{draw_time.strftime('%H:%M')})"
@@ -21,7 +21,7 @@ class LottoBetService
     # 3. KYC Check
     unless client.kyc_requests.approved.exists?
       # Uncomment to enforce KYC
-      # raise "KYC requis pour parier" 
+      # raise "KYC requis pour parier"
     end
 
     ActiveRecord::Base.transaction do
@@ -50,5 +50,14 @@ class LottoBetService
       bet
     end
   end
-end
 
+  def self.draw_time_for(draw_date, session)
+    date = draw_date.to_date
+    session_key = session.to_s
+    hour, minute = session_key == "morning" ? [ 9, 0 ] : [ 20, 25 ]
+
+    zone = Time.find_zone(Rails.application.config.time_zone) || Time.zone || ActiveSupport::TimeZone["UTC"]
+    zone.local(date.year, date.month, date.day, hour, minute)
+  end
+  private_class_method :draw_time_for
+end

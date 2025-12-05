@@ -1,7 +1,7 @@
 class Api::V1::LottoBetsController < Api::V1::ApplicationController
   def index
     meta, @bets = paginate(current_client.lotto_bets.order(created_at: :desc))
-    render json: { meta: meta, data: @bets }, status: :ok
+    render_success(data: { meta: meta, data: @bets })
   end
 
   def create
@@ -30,16 +30,8 @@ class Api::V1::LottoBetsController < Api::V1::ApplicationController
 
     # 3. Réponse de succès
     render_success(
-      data: bet,
-      message: "Pari créé avec succès",
-      status: :created
-    )
-  rescue StandardError => e
-    Rails.logger.error("LottoBet creation failed: #{e.class} - #{e.message}")
-    Rails.logger.error(e.backtrace.join("\n"))
-    render_error(
-      message: "Une erreur inattendue est survenue",
-      status: :internal_server_error
+      data: { bet: bet },
+      message: "Pari créé avec succès"
     )
   end
 

@@ -24,26 +24,26 @@ Rails.application.routes.draw do
         end
       end
 
-      resources :kyc_requests, only: [:create] do
+      resources :kyc_requests, only: [ :create ] do
         collection do
           get :show_by_client
         end
       end
 
-      resources :topups, only: [:create, :index] do
+      resources :topups, only: [ :create, :index ] do
         collection do
           put :confirm
         end
       end
 
-      resources :withdrawals, only: [:create, :index] do
+      resources :withdrawals, only: [ :create, :index ] do
         collection do
           put :confirm
         end
       end
 
-      resources :lotto_bets, only: [:create, :index, :show]
-      resources :lotto_draws, only: [:index, :show, :create] do
+      resources :lotto_bets, only: [ :create, :index, :show ]
+      resources :lotto_draws, only: [ :index, :show, :create ] do
         collection do
           get :latest
         end
@@ -51,7 +51,7 @@ Rails.application.routes.draw do
           get :bets
         end
       end
-      resources :lotto_wins, only: [:index]
+      resources :lotto_wins, only: [ :index ]
     end
   end
 

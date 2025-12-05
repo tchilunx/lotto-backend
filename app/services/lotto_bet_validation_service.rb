@@ -25,7 +25,7 @@ class LottoBetValidationService
 
     def validate_numbers
       numbers = parse_numbers(@params[:numbers])
-      
+
       if numbers.nil? || numbers.empty?
         @errors << "Numbers can't be blank"
         @errors << "Numbers doit contenir exactement 5 numéros"
@@ -49,7 +49,7 @@ class LottoBetValidationService
 
     def validate_draw_date
       draw_date = parse_date(@params[:draw_date])
-      
+
       if draw_date.nil?
         @errors << "Draw date is required"
         return
@@ -64,7 +64,7 @@ class LottoBetValidationService
 
     def validate_session
       session = @params[:session]
-      
+
       unless %w[morning evening].include?(session)
         @errors << "Session doit être 'morning' ou 'evening'"
         return
@@ -75,7 +75,7 @@ class LottoBetValidationService
 
     def validate_amount
       amount = @params[:amount]&.to_d || 100.0
-      
+
       if amount <= 0
         @errors << "Le montant doit être supérieur à 0"
         return
@@ -90,25 +90,25 @@ class LottoBetValidationService
 
     def parse_numbers(numbers_param)
       return nil if numbers_param.nil?
-      
+
       return numbers_param.map(&:to_i) if numbers_param.is_a?(Array)
-      
+
       if numbers_param.is_a?(String)
         begin
           parsed = JSON.parse(numbers_param)
           return parsed.map(&:to_i) if parsed.is_a?(Array)
         rescue JSON::ParserError
-          return numbers_param.split(',').map(&:strip).map(&:to_i)
+          return numbers_param.split(",").map(&:strip).map(&:to_i)
         end
       end
-      
+
       nil
     end
 
     def parse_date(date_param)
       return nil if date_param.nil?
       return date_param if date_param.is_a?(Date)
-      
+
       if date_param.is_a?(String)
         Date.parse(date_param)
       else
@@ -126,5 +126,4 @@ class LottoBetValidationService
         amount: @validated_amount
       }
     end
-  end
-
+end

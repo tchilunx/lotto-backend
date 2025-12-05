@@ -17,7 +17,7 @@ class TopupDraftCreationService
         @payment_method,
         @draft_data
       )
-      
+
       draft
     rescue => e
       Rails.logger.error("TopupDraftCreationService error: #{e.class} - #{e.message}")
@@ -26,4 +26,3 @@ class TopupDraftCreationService
       nil
     end
 end
-
